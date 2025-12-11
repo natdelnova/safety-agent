@@ -18,13 +18,13 @@ export default function ContactsPage() {
   const [phone, setPhone] = useState('');
   const [relationship, setRelationship] = useState('');
   const router = useRouter();
-  const supabase = createClient();
 
   useEffect(() => {
     loadContacts();
   }, []);
 
   const loadContacts = async () => {
+    const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -40,6 +40,7 @@ export default function ContactsPage() {
 
   const addContact = async (e: React.FormEvent) => {
     e.preventDefault();
+    const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -63,11 +64,13 @@ export default function ContactsPage() {
   };
 
   const deleteContact = async (id: string) => {
+    const supabase = createClient();
     await supabase.from('safety_contacts').delete().eq('id', id);
     loadContacts();
   };
 
   const setPrimary = async (id: string) => {
+    const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 

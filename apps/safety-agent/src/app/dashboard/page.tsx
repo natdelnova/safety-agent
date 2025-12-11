@@ -18,13 +18,13 @@ export default function DashboardPage() {
   const [scheduledTime, setScheduledTime] = useState('');
   const [userEmail, setUserEmail] = useState('');
   const router = useRouter();
-  const supabase = createClient();
 
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
+    const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -50,6 +50,7 @@ export default function DashboardPage() {
 
   const scheduleCall = async (minutesFromNow: number | null) => {
     setScheduling(true);
+    const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
@@ -75,6 +76,7 @@ export default function DashboardPage() {
   };
 
   const cancelCall = async (id: string) => {
+    const supabase = createClient();
     await supabase
       .from('scheduled_calls')
       .update({ status: 'cancelled' })
@@ -83,6 +85,7 @@ export default function DashboardPage() {
   };
 
   const handleSignOut = async () => {
+    const supabase = createClient();
     await supabase.auth.signOut();
     router.push('/login');
   };
