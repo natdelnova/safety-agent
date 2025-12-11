@@ -20,20 +20,25 @@ export async function POST(request: Request) {
     }
 
     // Call the guardian webhook
+    const payload = { phone, code_word, emergency_phone };
+    console.log('[trigger-call] Calling webhook:', GUARDIAN_WEBHOOK_URL);
+    console.log('[trigger-call] Payload:', JSON.stringify(payload));
+
     const webhookResponse = await fetch(GUARDIAN_WEBHOOK_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        phone,
-        code_word,
-        emergency_phone,
-      }),
+      body: JSON.stringify(payload),
     });
 
+    console.log('[trigger-call] Response status:', webhookResponse.status);
+    const responseText = await webhookResponse.text();
+    console.log('[trigger-call] Response body:', responseText);
+
     if (!webhookResponse.ok) {
-      throw new Error('Failed to trigger guardian alert');
+      console.error('[trigger-call] Webhook failed:', responseText);
+      throw new Error(`Webhook failed: ${webhookResponse.status} - ${responseText}`);
     }
 
     // Log the call in the database
@@ -47,9 +52,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error triggering call:', error);
+    console.error('[trigger-call] Error:', error);
     return NextResponse.json(
-      { error: 'Failed to trigger call' },
+      { error: 'Failed to trigger call', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
