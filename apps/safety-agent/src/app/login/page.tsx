@@ -162,13 +162,13 @@ export default function LoginPage() {
             {/* OTP code field - only when OTP sent */}
             {authMode === 'otp' && otpSent && (
               <div className="space-y-2">
-                <Label htmlFor="otpCode">6-digit code</Label>
+                <Label htmlFor="otpCode">8-digit code</Label>
                 <Input
                   id="otpCode"
                   type="text"
                   inputMode="numeric"
-                  maxLength={6}
-                  placeholder="Enter 6-digit code"
+                  maxLength={8}
+                  placeholder="Enter 8-digit code"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
                   required
