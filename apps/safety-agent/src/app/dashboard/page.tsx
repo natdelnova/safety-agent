@@ -64,7 +64,11 @@ export default function DashboardPage() {
         await fetch('/api/trigger-call', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ phone: profile.phone, immediate: true }),
+          body: JSON.stringify({
+            phone: profile.phone,
+            code_word: profile.safe_word,
+            immediate: true,
+          }),
         });
       } catch (err) {
         console.error('Failed to trigger call:', err);

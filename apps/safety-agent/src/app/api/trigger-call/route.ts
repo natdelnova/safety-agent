@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import { NextResponse } from 'next/server';
 
-const GUARDIAN_WEBHOOK_URL = 'https://ea-one.app.n8n.cloud/webhook/guardian-alert';
+const GUARDIAN_WEBHOOK_URL = 'https://ea-one.app.n8n.cloud/webhook/guardian-start';
 
 export async function POST(request: Request) {
   try {
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { phone, immediate } = body;
+    const { phone, code_word, immediate } = body;
 
     if (!phone) {
       return NextResponse.json({ error: 'Phone number required' }, { status: 400 });
@@ -27,6 +27,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         phone,
+        code_word,
       }),
     });
 
