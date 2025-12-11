@@ -1,3 +1,12 @@
+export interface UserProfile {
+  id: string;
+  user_id: string;
+  first_name: string;
+  safe_word: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface SafetyContact {
   id: string;
   user_id: string;

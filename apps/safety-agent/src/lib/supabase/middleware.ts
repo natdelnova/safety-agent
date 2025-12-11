@@ -41,22 +41,52 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+  const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/auth');
+  const isOnboarding = pathname.startsWith('/onboarding');
+
   // Protected routes - redirect to login if not authenticated
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth')
-  ) {
+  if (!user && !isAuthPage) {
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
   // Redirect authenticated users away from login page
-  if (user && request.nextUrl.pathname.startsWith('/login')) {
+  if (user && isAuthPage) {
     const url = request.nextUrl.clone();
     url.pathname = '/dashboard';
     return NextResponse.redirect(url);
+  }
+
+  // Check if user has completed onboarding (has profile)
+  if (user && !isOnboarding && !isAuthPage) {
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (!profile) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/onboarding';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // Redirect away from onboarding if already completed
+  if (user && isOnboarding) {
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('id')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profile) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/dashboard';
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;

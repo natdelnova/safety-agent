@@ -8,15 +8,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Phone, Clock, Users, LogOut, Calendar } from 'lucide-react';
-import type { SafetyContact, ScheduledCall } from '@/types';
+import type { SafetyContact, ScheduledCall, UserProfile } from '@/types';
 
 export default function DashboardPage() {
   const [contacts, setContacts] = useState<SafetyContact[]>([]);
   const [scheduledCalls, setScheduledCalls] = useState<ScheduledCall[]>([]);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [scheduling, setScheduling] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [scheduledTime, setScheduledTime] = useState('');
-  const [userEmail, setUserEmail] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -28,9 +28,12 @@ export default function DashboardPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
-    setUserEmail(user.email || '');
-
-    const [contactsRes, callsRes] = await Promise.all([
+    const [profileRes, contactsRes, callsRes] = await Promise.all([
+      supabase
+        .from('user_profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single(),
       supabase
         .from('safety_contacts')
         .select('*')
@@ -44,6 +47,7 @@ export default function DashboardPage() {
         .order('scheduled_time', { ascending: true }),
     ]);
 
+    setProfile(profileRes.data);
     setContacts(contactsRes.data || []);
     setScheduledCalls(callsRes.data || []);
   };
@@ -112,8 +116,12 @@ export default function DashboardPage() {
               <Shield className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold">Pronto</h1>
-              <p className="text-sm text-muted-foreground">{userEmail}</p>
+              <h1 className="text-xl font-bold">
+                {profile ? `Hey, ${profile.first_name}` : 'Pronto'}
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                {profile ? `Safe word: ${profile.safe_word}` : ''}
+              </p>
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={handleSignOut}>
