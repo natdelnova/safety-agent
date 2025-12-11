@@ -103,7 +103,7 @@ export default function DashboardPage() {
   const primaryContact = contacts.find((c) => c.is_primary);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4 pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50/30 p-4 pb-20">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -136,7 +136,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button
-              className="w-full h-16 text-lg bg-green-600 hover:bg-green-700"
+              className="w-full h-16 text-lg bg-emerald-600 hover:bg-emerald-700"
               size="xl"
               onClick={() => scheduleCall(0)}
               disabled={scheduling || contacts.length === 0}

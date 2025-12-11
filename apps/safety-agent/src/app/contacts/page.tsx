@@ -88,7 +88,7 @@ export default function ContactsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-orange-50/30 p-4">
       <div className="max-w-md mx-auto">
         <div className="flex items-center gap-4 mb-6">
           <Button variant="ghost" size="icon" onClick={() => router.push('/dashboard')}>

@@ -1,27 +1,41 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-background: oklch(100% 0 0);
-  --color-foreground: oklch(14.9% 0.042 264.7);
+  /* Warm amber/coral palette - safe, approachable, human */
+  --color-background: oklch(99% 0.01 85);
+  --color-foreground: oklch(25% 0.02 50);
   --color-card: oklch(100% 0 0);
-  --color-card-foreground: oklch(14.9% 0.042 264.7);
-  --color-primary: oklch(54.6% 0.215 262.9);
-  --color-primary-foreground: oklch(98.4% 0.003 247.9);
-  --color-secondary: oklch(96.7% 0.003 264.5);
-  --color-secondary-foreground: oklch(21.5% 0.028 264.7);
-  --color-muted: oklch(96.7% 0.003 264.5);
-  --color-muted-foreground: oklch(55.6% 0.016 285.9);
-  --color-accent: oklch(96.7% 0.003 264.5);
-  --color-accent-foreground: oklch(21.5% 0.028 264.7);
-  --color-destructive: oklch(63.7% 0.237 25.3);
-  --color-destructive-foreground: oklch(98.4% 0.003 247.9);
-  --color-border: oklch(92.8% 0.006 264.5);
-  --color-input: oklch(92.8% 0.006 264.5);
-  --color-ring: oklch(54.6% 0.215 262.9);
-  --radius: 0.5rem;
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --color-card-foreground: oklch(25% 0.02 50);
+
+  /* Primary: warm coral/terracotta - friendly, reassuring */
+  --color-primary: oklch(62% 0.17 35);
+  --color-primary-foreground: oklch(99% 0.01 85);
+
+  /* Secondary: soft sand/cream */
+  --color-secondary: oklch(95% 0.02 80);
+  --color-secondary-foreground: oklch(35% 0.03 50);
+
+  /* Muted: warm gray with amber undertone */
+  --color-muted: oklch(94% 0.01 80);
+  --color-muted-foreground: oklch(50% 0.02 50);
+
+  /* Accent: golden amber for highlights */
+  --color-accent: oklch(88% 0.08 85);
+  --color-accent-foreground: oklch(30% 0.03 50);
+
+  /* Destructive: softer red, still urgent but not harsh */
+  --color-destructive: oklch(55% 0.2 25);
+  --color-destructive-foreground: oklch(98% 0.01 85);
+
+  /* Borders: warm neutral */
+  --color-border: oklch(90% 0.02 80);
+  --color-input: oklch(92% 0.02 80);
+  --color-ring: oklch(62% 0.17 35);
+
+  --radius: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.25rem;
 }
 
 * {
