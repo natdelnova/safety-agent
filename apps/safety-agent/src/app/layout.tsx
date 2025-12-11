@@ -1,9 +1,12 @@
 import './global.css';
-import type { Viewport } from 'next';
+import type { Viewport, Metadata } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Pronto',
   description: 'Quick errands and reminders',
+  icons: {
+    icon: '/favicon.svg',
+  },
 };
 
 export const viewport: Viewport = {

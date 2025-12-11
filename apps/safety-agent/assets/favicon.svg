@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 24 24" fill="none">
+  <!-- Background circle with warm coral -->
+  <circle cx="12" cy="12" r="12" fill="#d97756"/>
+  <!-- Shield icon in cream/white, centered -->
+  <path d="M12 4.5c-1.4 1.2-3.2 2-5 2a.5.5 0 0 0-.5.5v4.5c0 3.5 2.3 5.8 5.2 7a.5.5 0 0 0 .6 0c2.9-1.2 5.2-3.5 5.2-7V7a.5.5 0 0 0-.5-.5c-1.8 0-3.6-.8-5-2z" fill="#fef8f4"/>
+</svg>
