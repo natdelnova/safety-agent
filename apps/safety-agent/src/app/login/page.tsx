@@ -53,7 +53,7 @@ export default function LoginPage() {
           <div className="mx-auto w-12 h-12 bg-primary rounded-full flex items-center justify-center mb-4">
             <Shield className="w-6 h-6 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl">SafetyCall</CardTitle>
+          <CardTitle className="text-2xl">Pronto</CardTitle>
           <CardDescription>
             {isLogin ? 'Sign in to your account' : 'Create a new account'}
           </CardDescription>

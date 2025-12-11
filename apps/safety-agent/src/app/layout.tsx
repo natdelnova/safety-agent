@@ -2,8 +2,8 @@ import './global.css';
 import type { Viewport } from 'next';
 
 export const metadata = {
-  title: 'SafetyCall - Stay Safe',
-  description: 'Schedule safety check-in calls with your trusted contacts',
+  title: 'Pronto',
+  description: 'Quick errands and reminders',
 };
 
 export const viewport: Viewport = {
