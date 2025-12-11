@@ -58,6 +58,21 @@ export default function DashboardPage() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
 
+    // If immediate call (0 minutes), trigger the webhook
+    if (minutesFromNow === 0 && profile?.phone) {
+      try {
+        await fetch('/api/trigger-call', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: profile.phone, immediate: true }),
+        });
+      } catch (err) {
+        console.error('Failed to trigger call:', err);
+      }
+      setScheduling(false);
+      return;
+    }
+
     let callTime: Date;
     if (minutesFromNow === null) {
       callTime = new Date(scheduledTime);

@@ -22,6 +22,7 @@ const SAFE_WORD_OPTIONS = [
 
 export default function OnboardingPage() {
   const [firstName, setFirstName] = useState('');
+  const [phone, setPhone] = useState('');
   const [safeWord, setSafeWord] = useState('');
   const [customWord, setCustomWord] = useState('');
   const [useCustom, setUseCustom] = useState(false);
@@ -35,6 +36,10 @@ export default function OnboardingPage() {
 
     if (!firstName.trim()) {
       setError('Please enter your first name');
+      return;
+    }
+    if (!phone.trim()) {
+      setError('Please enter your phone number');
       return;
     }
     if (!finalSafeWord.trim()) {
@@ -57,6 +62,7 @@ export default function OnboardingPage() {
       const { error } = await supabase.from('user_profiles').insert({
         user_id: user.id,
         first_name: firstName.trim(),
+        phone: phone.trim(),
         safe_word: finalSafeWord.trim(),
       });
 
@@ -103,6 +109,21 @@ export default function OnboardingPage() {
                 onChange={(e) => setFirstName(e.target.value)}
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="phone">Your phone number</Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="+1 (555) 123-4567"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+              <p className="text-xs text-muted-foreground">
+                We'll call this number for safety check-ins
+              </p>
             </div>
 
             <div className="space-y-3">
