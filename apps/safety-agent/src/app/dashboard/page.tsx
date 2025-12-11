@@ -10,6 +10,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Shield, Phone, Clock, Users, LogOut, Calendar, Pencil, Check, X } from 'lucide-react';
 import type { SafetyContact, ScheduledCall, UserProfile } from '@/types';
 
+const SAFE_PHRASE_OPTIONS = [
+  'Did you feed the cat?',
+  'I left the pizza in the oven',
+  'Tell mom I said hi',
+  'Is uncle John coming?',
+  'Did you lock the back door?',
+  'The laundry is still running',
+  'My battery is dying',
+  'I need to charge my phone',
+];
+
 export default function DashboardPage() {
   const [contacts, setContacts] = useState<SafetyContact[]>([]);
   const [scheduledCalls, setScheduledCalls] = useState<ScheduledCall[]>([]);
@@ -202,23 +213,7 @@ export default function DashboardPage() {
               <h1 className="text-xl font-bold">
                 {profile ? `Hey, ${profile.first_name}` : 'Pronto'}
               </h1>
-              {editingSafePhrase ? (
-                <div className="flex items-center gap-1 mt-1">
-                  <Input
-                    type="text"
-                    value={newSafePhrase}
-                    onChange={(e) => setNewSafePhrase(e.target.value)}
-                    className="h-7 text-sm"
-                    autoFocus
-                  />
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={saveSafePhrase}>
-                    <Check className="w-4 h-4 text-green-600" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={cancelEditingSafePhrase}>
-                    <X className="w-4 h-4 text-red-600" />
-                  </Button>
-                </div>
-              ) : (
+              {!editingSafePhrase ? (
                 <button
                   onClick={startEditingSafePhrase}
                   className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
@@ -226,7 +221,7 @@ export default function DashboardPage() {
                   {profile ? `"${profile.safe_word}"` : ''}
                   <Pencil className="w-3 h-3" />
                 </button>
-              )}
+              ) : null}
               {editingPhone ? (
                 <div className="flex items-center gap-1 mt-1">
                   <Input
@@ -258,6 +253,63 @@ export default function DashboardPage() {
             <LogOut className="w-5 h-5" />
           </Button>
         </div>
+
+        {/* Safe Phrase Editor */}
+        {editingSafePhrase && (
+          <Card className="mb-4">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg">Change Safe Phrase</CardTitle>
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={cancelEditingSafePhrase}>
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              <CardDescription>
+                Choose a phrase that sounds natural in conversation
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-1 gap-2">
+                {SAFE_PHRASE_OPTIONS.map((phrase) => (
+                  <button
+                    key={phrase}
+                    type="button"
+                    onClick={() => setNewSafePhrase(phrase)}
+                    className={`p-3 rounded-lg border text-left text-sm transition-colors ${
+                      newSafePhrase === phrase
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border hover:border-primary/50 hover:bg-accent'
+                    }`}
+                  >
+                    {phrase}
+                  </button>
+                ))}
+              </div>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-card px-2 text-muted-foreground">Or custom</span>
+                </div>
+              </div>
+              <Input
+                type="text"
+                placeholder="Enter custom safe phrase"
+                value={SAFE_PHRASE_OPTIONS.includes(newSafePhrase) ? '' : newSafePhrase}
+                onChange={(e) => setNewSafePhrase(e.target.value)}
+                className={!SAFE_PHRASE_OPTIONS.includes(newSafePhrase) && newSafePhrase ? 'border-primary' : ''}
+              />
+              <Button
+                className="w-full"
+                onClick={saveSafePhrase}
+                disabled={!newSafePhrase.trim()}
+              >
+                Save Safe Phrase
+              </Button>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Quick Actions */}
         <Card className="mb-4">
