@@ -13,14 +13,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { name, phone, code_word, emergency_name, emergency_phone, immediate } = body;
+    const { name, phone, code_word, emergency_name, emergency_phone, scheduled_time } = body;
 
     if (!phone) {
       return NextResponse.json({ error: 'Phone number required' }, { status: 400 });
     }
 
     // Call the guardian webhook
-    const payload = { name, phone, code_word, emergency_name, emergency_phone };
+    const payload: Record<string, string | undefined> = { name, phone, code_word, emergency_name, emergency_phone };
+    if (scheduled_time) {
+      payload.scheduled_time = scheduled_time;
+    }
     console.log('[trigger-call] Calling webhook:', GUARDIAN_WEBHOOK_URL);
     console.log('[trigger-call] Payload:', JSON.stringify(payload));
 

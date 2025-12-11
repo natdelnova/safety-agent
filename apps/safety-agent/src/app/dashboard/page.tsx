@@ -113,6 +113,25 @@ export default function DashboardPage() {
       callTime = new Date(Date.now() + minutesFromNow * 60 * 1000);
     }
 
+    // Call webhook with scheduled time
+    try {
+      await fetch('/api/trigger-call', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: profile?.first_name,
+          phone: profile?.phone,
+          code_word: profile?.safe_word,
+          emergency_name: primaryContact?.name,
+          emergency_phone: primaryContact?.phone,
+          scheduled_time: callTime.toISOString(),
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to schedule call:', err);
+    }
+
+    // Also save to database for tracking
     const { error } = await supabase.from('scheduled_calls').insert({
       user_id: user.id,
       scheduled_time: callTime.toISOString(),
