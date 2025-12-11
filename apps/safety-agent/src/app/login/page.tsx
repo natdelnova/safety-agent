@@ -40,6 +40,7 @@ export default function LoginPage() {
           type: 'email',
         });
         if (error) throw error;
+        router.refresh();
         router.push('/dashboard');
       }
     } catch (err) {
