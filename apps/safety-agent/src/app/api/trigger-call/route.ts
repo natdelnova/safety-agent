@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { phone, code_word, immediate } = body;
+    const { phone, code_word, emergency_phone, immediate } = body;
 
     if (!phone) {
       return NextResponse.json({ error: 'Phone number required' }, { status: 400 });
@@ -28,6 +28,7 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         phone,
         code_word,
+        emergency_phone,
       }),
     });
 

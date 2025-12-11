@@ -60,6 +60,7 @@ export default function DashboardPage() {
     if (!user) return;
 
     // If immediate call (0 minutes), trigger the webhook
+    const primaryContact = contacts.find((c) => c.is_primary);
     if (minutesFromNow === 0 && profile?.phone) {
       try {
         const res = await fetch('/api/trigger-call', {
@@ -68,6 +69,7 @@ export default function DashboardPage() {
           body: JSON.stringify({
             phone: profile.phone,
             code_word: profile.safe_word,
+            emergency_phone: primaryContact?.phone,
             immediate: true,
           }),
         });
