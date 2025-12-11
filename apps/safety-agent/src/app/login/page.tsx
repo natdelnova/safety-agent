@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield } from 'lucide-react';
 
-type AuthMode = 'login' | 'signup' | 'otp';
+type AuthMode = 'login' | 'otp';
 
 export default function LoginPage() {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
@@ -35,13 +35,6 @@ export default function LoginPage() {
         });
         if (error) throw error;
         router.push('/dashboard');
-      } else if (authMode === 'signup') {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-        });
-        if (error) throw error;
-        setError('Check your email for the confirmation link!');
       } else if (authMode === 'otp') {
         if (!otpSent) {
           // Send OTP code
@@ -100,8 +93,6 @@ export default function LoginPage() {
     switch (authMode) {
       case 'login':
         return 'Sign In';
-      case 'signup':
-        return 'Sign Up';
       case 'otp':
         return otpSent ? 'Verify Code' : 'Send Code';
       default:
@@ -189,30 +180,12 @@ export default function LoginPage() {
 
           <div className="mt-4 text-center space-y-2">
             {authMode === 'login' && (
-              <>
-                <button
-                  type="button"
-                  className="text-sm text-muted-foreground hover:text-primary block w-full"
-                  onClick={() => setAuthMode('otp')}
-                >
-                  Sign in with email code instead
-                </button>
-                <button
-                  type="button"
-                  className="text-sm text-muted-foreground hover:text-primary block w-full"
-                  onClick={() => setAuthMode('signup')}
-                >
-                  Don't have an account? Sign up
-                </button>
-              </>
-            )}
-            {authMode === 'signup' && (
               <button
                 type="button"
-                className="text-sm text-muted-foreground hover:text-primary"
-                onClick={() => setAuthMode('login')}
+                className="text-sm text-muted-foreground hover:text-primary block w-full"
+                onClick={() => setAuthMode('otp')}
               >
-                Already have an account? Sign in
+                Sign in with email code instead
               </button>
             )}
             {authMode === 'otp' && !otpSent && (
