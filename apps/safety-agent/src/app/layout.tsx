@@ -4,9 +4,6 @@ import type { Viewport, Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Pronto',
   description: 'Quick errands and reminders',
-  icons: {
-    icon: '/favicon.svg',
-  },
 };
 
 export const viewport: Viewport = {
