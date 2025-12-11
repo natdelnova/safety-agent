@@ -20,6 +20,8 @@ export default function DashboardPage() {
   const [callStatus, setCallStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [editingSafePhrase, setEditingSafePhrase] = useState(false);
   const [newSafePhrase, setNewSafePhrase] = useState('');
+  const [editingPhone, setEditingPhone] = useState(false);
+  const [newPhone, setNewPhone] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -151,6 +153,30 @@ export default function DashboardPage() {
     setNewSafePhrase('');
   };
 
+  const startEditingPhone = () => {
+    setNewPhone(profile?.phone || '');
+    setEditingPhone(true);
+  };
+
+  const savePhone = async () => {
+    if (!newPhone.trim() || !profile) return;
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ phone: newPhone.trim() })
+      .eq('id', profile.id);
+
+    if (!error) {
+      setProfile({ ...profile, phone: newPhone.trim() });
+      setEditingPhone(false);
+    }
+  };
+
+  const cancelEditingPhone = () => {
+    setEditingPhone(false);
+    setNewPhone('');
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString('en-US', {
@@ -198,6 +224,31 @@ export default function DashboardPage() {
                   className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
                 >
                   {profile ? `"${profile.safe_word}"` : ''}
+                  <Pencil className="w-3 h-3" />
+                </button>
+              )}
+              {editingPhone ? (
+                <div className="flex items-center gap-1 mt-1">
+                  <Input
+                    type="tel"
+                    value={newPhone}
+                    onChange={(e) => setNewPhone(e.target.value)}
+                    className="h-7 text-sm"
+                    autoFocus
+                  />
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={savePhone}>
+                    <Check className="w-4 h-4 text-green-600" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={cancelEditingPhone}>
+                    <X className="w-4 h-4 text-red-600" />
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  onClick={startEditingPhone}
+                  className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
+                >
+                  {profile?.phone || 'Add phone'}
                   <Pencil className="w-3 h-3" />
                 </button>
               )}
