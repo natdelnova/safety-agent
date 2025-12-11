@@ -15,6 +15,8 @@ export default function LoginPage() {
   const [authMode, setAuthMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otpCode, setOtpCode] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -41,17 +43,43 @@ export default function LoginPage() {
         if (error) throw error;
         setError('Check your email for the confirmation link!');
       } else if (authMode === 'otp') {
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-        });
-        if (error) throw error;
-        setError('Check your email for the sign-in link!');
+        if (!otpSent) {
+          // Send OTP code
+          const { error } = await supabase.auth.signInWithOtp({
+            email,
+          });
+          if (error) throw error;
+          setOtpSent(true);
+          setError('Code sent! Check your email.');
+        } else {
+          // Verify OTP code
+          const { error } = await supabase.auth.verifyOtp({
+            email,
+            token: otpCode,
+            type: 'email',
+          });
+          if (error) throw error;
+          router.push('/dashboard');
+        }
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleResendCode = () => {
+    setOtpSent(false);
+    setOtpCode('');
+    setError(null);
+  };
+
+  const handleChangeEmail = () => {
+    setOtpSent(false);
+    setOtpCode('');
+    setEmail('');
+    setError(null);
   };
 
   const getTitle = () => {
@@ -61,7 +89,7 @@ export default function LoginPage() {
       case 'signup':
         return 'Create a new account';
       case 'otp':
-        return 'Sign in with email code';
+        return otpSent ? 'Enter your code' : 'Sign in with email code';
       default:
         return 'Sign in to your account';
     }
@@ -75,7 +103,7 @@ export default function LoginPage() {
       case 'signup':
         return 'Sign Up';
       case 'otp':
-        return 'Send Code';
+        return otpSent ? 'Verify Code' : 'Send Code';
       default:
         return 'Sign In';
     }
@@ -93,17 +121,29 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
+            {/* Email field - show as text when OTP sent, otherwise as input */}
+            {authMode === 'otp' && otpSent ? (
+              <div className="space-y-2">
+                <Label>Email</Label>
+                <p className="text-sm text-muted-foreground bg-secondary px-3 py-2 rounded-md">
+                  {email}
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
+            {/* Password field - only for login/signup */}
             {authMode !== 'otp' && (
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
@@ -118,8 +158,27 @@ export default function LoginPage() {
                 />
               </div>
             )}
+
+            {/* OTP code field - only when OTP sent */}
+            {authMode === 'otp' && otpSent && (
+              <div className="space-y-2">
+                <Label htmlFor="otpCode">6-digit code</Label>
+                <Input
+                  id="otpCode"
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="Enter 6-digit code"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                  required
+                  className="text-center text-lg tracking-widest"
+                />
+              </div>
+            )}
+
             {error && (
-              <p className={`text-sm ${error.includes('Check your email') ? 'text-green-600' : 'text-destructive'}`}>
+              <p className={`text-sm ${error.includes('Code sent') || error.includes('Check your email') ? 'text-green-600' : 'text-destructive'}`}>
                 {error}
               </p>
             )}
@@ -127,6 +186,7 @@ export default function LoginPage() {
               {getButtonText()}
             </Button>
           </form>
+
           <div className="mt-4 text-center space-y-2">
             {authMode === 'login' && (
               <>
@@ -155,7 +215,7 @@ export default function LoginPage() {
                 Already have an account? Sign in
               </button>
             )}
-            {authMode === 'otp' && (
+            {authMode === 'otp' && !otpSent && (
               <button
                 type="button"
                 className="text-sm text-muted-foreground hover:text-primary"
@@ -163,6 +223,24 @@ export default function LoginPage() {
               >
                 Sign in with password instead
               </button>
+            )}
+            {authMode === 'otp' && otpSent && (
+              <>
+                <button
+                  type="button"
+                  className="text-sm text-muted-foreground hover:text-primary block w-full"
+                  onClick={handleResendCode}
+                >
+                  Resend code
+                </button>
+                <button
+                  type="button"
+                  className="text-sm text-muted-foreground hover:text-primary block w-full"
+                  onClick={handleChangeEmail}
+                >
+                  Use a different email
+                </button>
+              </>
             )}
           </div>
         </CardContent>
