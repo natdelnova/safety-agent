@@ -44,15 +44,6 @@ export async function POST(request: Request) {
       throw new Error(`Webhook failed: ${webhookResponse.status} - ${responseText}`);
     }
 
-    // Log the call in the database
-    if (immediate) {
-      await supabase.from('scheduled_calls').insert({
-        user_id: user.id,
-        scheduled_time: new Date().toISOString(),
-        status: 'completed',
-      });
-    }
-
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('[trigger-call] Error:', error);
