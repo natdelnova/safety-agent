@@ -87,7 +87,7 @@ export default function DashboardPage() {
             code_word: profile.safe_word,
             emergency_name: primaryContact?.name,
             emergency_phone: primaryContact?.phone,
-            immediate: true,
+            scheduled_time: new Date().toISOString(),
           }),
         });
         if (res.ok) {
