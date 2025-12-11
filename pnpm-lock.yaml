@@ -157,6 +157,18 @@ importers:
         specifier: ^8.40.0
         version: 8.49.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
 
+  apps/safety-agent:
+    dependencies:
+      next:
+        specifier: ~16.0.1
+        version: 16.0.8(@babel/core@7.28.5)(babel-plugin-macros@3.1.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.96.0)
+      react:
+        specifier: ^19.0.0
+        version: 19.2.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.1(react@19.2.1)
+
 packages:
 
   '@alloc/quick-lru@5.2.0':
