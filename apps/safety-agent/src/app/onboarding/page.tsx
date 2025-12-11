@@ -10,14 +10,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Shield, Check } from 'lucide-react';
 
 const SAFE_WORD_OPTIONS = [
-  'Pineapple',
-  'Umbrella',
-  'Butterfly',
-  'Sunshine',
-  'Coconut',
-  'Rainbow',
-  'Starfish',
-  'Lavender',
+  'Did you feed the cat?',
+  'I left the pizza in the oven',
+  'Tell mom I said hi',
+  'Is uncle John coming?',
+  'Did you lock the back door?',
+  'The laundry is still running',
+  'My battery is dying',
+  'I need to charge my phone',
 ];
 
 export default function OnboardingPage() {
@@ -43,7 +43,7 @@ export default function OnboardingPage() {
       return;
     }
     if (!finalSafeWord.trim()) {
-      setError('Please select or enter a safe word');
+      setError('Please select or enter a safe phrase');
       return;
     }
 
@@ -127,9 +127,9 @@ export default function OnboardingPage() {
             </div>
 
             <div className="space-y-3">
-              <Label>Choose your safe word</Label>
+              <Label>Choose your safe phrase</Label>
               <p className="text-sm text-muted-foreground">
-                This word will be used to verify it's really you during calls
+                Say this naturally during a call to signal you need help
               </p>
 
               <div className="grid grid-cols-2 gap-2">
@@ -163,7 +163,7 @@ export default function OnboardingPage() {
 
               <Input
                 type="text"
-                placeholder="Enter custom safe word"
+                placeholder="Enter custom safe phrase"
                 value={customWord}
                 onChange={(e) => handleCustomWordChange(e.target.value)}
                 className={useCustom && customWord ? 'border-primary' : ''}
