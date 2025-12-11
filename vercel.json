@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm nx build safety-agent",
-  "outputDirectory": "apps/safety-agent/.next",
+  "buildCommand": "cd ../.. && pnpm nx build safety-agent",
+  "outputDirectory": ".next",
   "framework": "nextjs"
 }
