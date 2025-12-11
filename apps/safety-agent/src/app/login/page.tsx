@@ -79,8 +79,6 @@ export default function LoginPage() {
     switch (authMode) {
       case 'login':
         return 'Sign in to your account';
-      case 'signup':
-        return 'Create a new account';
       case 'otp':
         return otpSent ? 'Enter your code' : 'Sign in with email code';
       default:
