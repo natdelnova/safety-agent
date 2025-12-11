@@ -169,7 +169,7 @@ export default function DashboardPage() {
             </CardTitle>
             <CardDescription>
               {primaryContact
-                ? `${primaryContact.name} will call you to check in`
+                ? `We'll call you and connect you to ${primaryContact.name} if you say the safe phrase`
                 : 'Add a safety contact first'}
             </CardDescription>
           </CardHeader>
