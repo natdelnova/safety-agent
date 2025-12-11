@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, Phone, Clock, Users, LogOut, Calendar } from 'lucide-react';
+import { Shield, Phone, Clock, Users, LogOut, Calendar, Pencil, Check, X } from 'lucide-react';
 import type { SafetyContact, ScheduledCall, UserProfile } from '@/types';
 
 export default function DashboardPage() {
@@ -18,6 +18,8 @@ export default function DashboardPage() {
   const [showScheduler, setShowScheduler] = useState(false);
   const [scheduledTime, setScheduledTime] = useState('');
   const [callStatus, setCallStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [editingSafePhrase, setEditingSafePhrase] = useState(false);
+  const [newSafePhrase, setNewSafePhrase] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -125,6 +127,30 @@ export default function DashboardPage() {
     router.push('/login');
   };
 
+  const startEditingSafePhrase = () => {
+    setNewSafePhrase(profile?.safe_word || '');
+    setEditingSafePhrase(true);
+  };
+
+  const saveSafePhrase = async () => {
+    if (!newSafePhrase.trim() || !profile) return;
+    const supabase = createClient();
+    const { error } = await supabase
+      .from('user_profiles')
+      .update({ safe_word: newSafePhrase.trim() })
+      .eq('id', profile.id);
+
+    if (!error) {
+      setProfile({ ...profile, safe_word: newSafePhrase.trim() });
+      setEditingSafePhrase(false);
+    }
+  };
+
+  const cancelEditingSafePhrase = () => {
+    setEditingSafePhrase(false);
+    setNewSafePhrase('');
+  };
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleString('en-US', {
@@ -146,13 +172,35 @@ export default function DashboardPage() {
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
               <Shield className="w-5 h-5 text-primary-foreground" />
             </div>
-            <div>
+            <div className="flex-1">
               <h1 className="text-xl font-bold">
                 {profile ? `Hey, ${profile.first_name}` : 'Pronto'}
               </h1>
-              <p className="text-sm text-muted-foreground">
-                {profile ? `Safe word: ${profile.safe_word}` : ''}
-              </p>
+              {editingSafePhrase ? (
+                <div className="flex items-center gap-1 mt-1">
+                  <Input
+                    type="text"
+                    value={newSafePhrase}
+                    onChange={(e) => setNewSafePhrase(e.target.value)}
+                    className="h-7 text-sm"
+                    autoFocus
+                  />
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={saveSafePhrase}>
+                    <Check className="w-4 h-4 text-green-600" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-7 w-7" onClick={cancelEditingSafePhrase}>
+                    <X className="w-4 h-4 text-red-600" />
+                  </Button>
+                </div>
+              ) : (
+                <button
+                  onClick={startEditingSafePhrase}
+                  className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1"
+                >
+                  {profile ? `"${profile.safe_word}"` : ''}
+                  <Pencil className="w-3 h-3" />
+                </button>
+              )}
             </div>
           </div>
           <Button variant="ghost" size="icon" onClick={handleSignOut}>
