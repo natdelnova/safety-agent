@@ -50,6 +50,10 @@ create policy "Users can update their own profile"
   on public.user_profiles for update
   using (auth.uid() = user_id);
 
+create policy "Users can delete their own profile"
+  on public.user_profiles for delete
+  using (auth.uid() = user_id);
+
 -- RLS policies for safety_contacts
 create policy "Users can view their own contacts"
   on public.safety_contacts for select

@@ -61,13 +61,13 @@ export async function updateSession(request: NextRequest) {
 
   // Check if user has completed onboarding (has profile)
   if (user && !isOnboarding && !isAuthPage) {
-    const { data: profile } = await supabase
+    const { data: profile, error } = await supabase
       .from('user_profiles')
       .select('id')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
-    if (!profile) {
+    if (!profile && !error) {
       const url = request.nextUrl.clone();
       url.pathname = '/onboarding';
       return NextResponse.redirect(url);
@@ -80,7 +80,7 @@ export async function updateSession(request: NextRequest) {
       .from('user_profiles')
       .select('id')
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     if (profile) {
       const url = request.nextUrl.clone();

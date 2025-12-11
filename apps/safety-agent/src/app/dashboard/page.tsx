@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const [scheduling, setScheduling] = useState(false);
   const [showScheduler, setShowScheduler] = useState(false);
   const [scheduledTime, setScheduledTime] = useState('');
+  const [callStatus, setCallStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const router = useRouter();
 
   useEffect(() => {
@@ -61,7 +62,7 @@ export default function DashboardPage() {
     // If immediate call (0 minutes), trigger the webhook
     if (minutesFromNow === 0 && profile?.phone) {
       try {
-        await fetch('/api/trigger-call', {
+        const res = await fetch('/api/trigger-call', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -70,8 +71,17 @@ export default function DashboardPage() {
             immediate: true,
           }),
         });
+        if (res.ok) {
+          setCallStatus('success');
+          setTimeout(() => setCallStatus('idle'), 3000);
+        } else {
+          setCallStatus('error');
+          setTimeout(() => setCallStatus('idle'), 3000);
+        }
       } catch (err) {
         console.error('Failed to trigger call:', err);
+        setCallStatus('error');
+        setTimeout(() => setCallStatus('idle'), 3000);
       }
       setScheduling(false);
       return;
@@ -163,13 +173,19 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button
-              className="w-full h-16 text-lg bg-emerald-600 hover:bg-emerald-700"
+              className={`w-full h-16 text-lg ${
+                callStatus === 'success' ? 'bg-green-600 hover:bg-green-700' :
+                callStatus === 'error' ? 'bg-red-600 hover:bg-red-700' :
+                'bg-emerald-600 hover:bg-emerald-700'
+              }`}
               size="xl"
               onClick={() => scheduleCall(0)}
-              disabled={scheduling || contacts.length === 0}
+              disabled={scheduling || !profile?.phone}
             >
               <Phone className="w-6 h-6 mr-3" />
-              Call Me Now
+              {callStatus === 'success' ? 'Call Triggered!' :
+               callStatus === 'error' ? 'Failed - Try Again' :
+               scheduling ? 'Calling...' : 'Call Me Now'}
             </Button>
             <div className="grid grid-cols-2 gap-3">
               <Button
