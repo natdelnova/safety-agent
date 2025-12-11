@@ -82,8 +82,10 @@ export default function DashboardPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            name: profile.first_name,
             phone: profile.phone,
             code_word: profile.safe_word,
+            emergency_name: primaryContact?.name,
             emergency_phone: primaryContact?.phone,
             immediate: true,
           }),
